@@ -50,7 +50,7 @@ def init_db(path: Path | None = None) -> None:
 def get_conn(path: Path | None = None) -> Iterator[sqlite3.Connection]:
     p = path or DB_PATH
     init_db(p)
-    conn = sqlite3.connect(p)
+    conn = sqlite3.connect(p, timeout=60)  # 過去分の並行取り込みで書き込みが重なっても待つ
     conn.row_factory = sqlite3.Row
     try:
         yield conn

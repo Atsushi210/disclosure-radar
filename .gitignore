@@ -5,3 +5,5 @@ __pycache__/
 .env
 data/*.db
 data/*.xlsx
+data/prices.pkl
+data/study_*.csv

@@ -36,6 +36,18 @@ def test_collect_saves_once_and_enriches(temp_db, monkeypatch):
         assert conn.execute("SELECT profit_rate FROM events WHERE type='forecast_revision'").fetchone()[0] == 45.0
 
 
+def test_apply_importance_uses_table_and_keeps_big_revision():
+    from radar.classify import Event
+
+    d = make("z.pdf", "t")
+    table = {"buyback|up|micro": 2, "forecast_revision|up|*": 1}
+    bb = pipeline.NewEvent(d, Event("buyback", "自社株買い", "up", 3))
+    assert pipeline.apply_importance(bb, "micro", table).event.importance == 2
+    assert pipeline.apply_importance(bb, "large", table).event.importance == 3  # 表に無ければ元のまま
+    rev = pipeline.NewEvent(d, Event("forecast_revision", "業績予想の修正", "up", 3), 5.0, 45.0)
+    assert pipeline.apply_importance(rev, "small", table).event.importance == 3
+
+
 def test_fetch_falls_back(monkeypatch):
     def boom(d):
         raise RuntimeError("down")

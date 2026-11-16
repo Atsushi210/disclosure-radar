@@ -14,7 +14,7 @@ from datetime import date
 from radar import db
 from radar.master import download_master, load_master
 from radar.models import today_jst
-from radar.pipeline import collect
+from radar.pipeline import backfill, collect
 
 ARROW = {"up": "↑", "down": "↓", "?": "・"}
 SIZE_LABEL = {"large": "大型", "mid": "中型", "small": "小型", "micro": "超小型", "other": "他", "": "不明"}
@@ -71,6 +71,11 @@ def main(argv: list[str] | None = None) -> None:
     c.add_argument("--date", type=date.fromisoformat)
     c.add_argument("--no-enrich", action="store_true")
     c.set_defaults(func=cmd_collect)
+
+    b = sub.add_parser("backfill")
+    b.add_argument("--start", type=date.fromisoformat, required=True)
+    b.add_argument("--end", type=date.fromisoformat, required=True)
+    b.set_defaults(func=lambda a: backfill(a.start, a.end))
 
     s = sub.add_parser("show")
     s.add_argument("--date", type=date.fromisoformat)
