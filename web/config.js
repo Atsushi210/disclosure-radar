@@ -1,7 +1,9 @@
 // Firebase の Web 用設定（公開して問題ない値。アクセス制御は firestore.rules で行う）
 export const firebaseConfig = {
   apiKey: "AIzaSyCaL46FgGv3LTkBNoSt-vEGy9DxsrNLnoo",
-  authDomain: "disclosure-radar-2026.firebaseapp.com",
+  // ホスティングと同じドメインにする。firebaseapp.com だと iPhone（ITP）でリダイレクト後の
+  // ログイン結果を読めず、ログイン画面に戻ってしまう
+  authDomain: "disclosure-radar-2026.web.app",
   projectId: "disclosure-radar-2026",
   storageBucket: "disclosure-radar-2026.firebasestorage.app",
   messagingSenderId: "1047615427881",
