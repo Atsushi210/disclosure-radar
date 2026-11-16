@@ -204,6 +204,8 @@ async function refreshPushStatus() {
   }
   const token = localStorage.getItem("radar.token");
   const on = Notification.permission === "granted" && token;
+  // 通知を受けている端末では起動のたびに Service Worker の更新を確認する
+  if (on) swRegistration().then((r) => r.update()).catch(() => {});
   $("push-status").textContent = on ? "この端末は通知を受け取る設定になっています。" : "この端末の通知はオフです。";
   $("btn-push").textContent = on ? "この端末の通知をオフにする" : "通知を有効にする";
   $("btn-push").onclick = on ? disablePush : enablePush;
