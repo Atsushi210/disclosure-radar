@@ -214,7 +214,9 @@ async function enablePush() {
     const perm = await Notification.requestPermission();
     if (perm !== "granted") { $("push-status").textContent = "通知が許可されませんでした。"; return; }
     const reg = await swRegistration();
-    const token = await getToken(getMessaging(app), { vapidKey, serviceWorkerRegistration: reg });
+    // vapidKey が空なら Firebase 既定の鍵が使われる（独自の鍵ペアは不要）
+    const opts = { serviceWorkerRegistration: reg, ...(vapidKey ? { vapidKey } : {}) };
+    const token = await getToken(getMessaging(app), opts);
     await setDoc(doc(db, "devices", token), { uid: user.uid, ua: navigator.userAgent.slice(0, 120), created_at: serverTimestamp() });
     localStorage.setItem("radar.token", token);
   } catch (e) {

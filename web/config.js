@@ -8,5 +8,5 @@ export const firebaseConfig = {
   appId: "1:1047615427881:web:78c62c8b891659e60d9338",
 };
 
-// Cloud Messaging → ウェブプッシュ証明書 の公開鍵
+// Cloud Messaging → ウェブプッシュ証明書 の公開鍵。空なら Firebase 既定の鍵を使う
 export const vapidKey = "";
