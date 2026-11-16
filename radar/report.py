@@ -14,7 +14,7 @@ import pandas as pd
 from radar import db
 from radar.master import load_master
 from radar.prices import load_cache
-from radar.study import event_returns, summarize
+from radar.study import adjust_by_baseline, baseline, event_returns, summarize
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "docs" / "event_study.md"
@@ -43,16 +43,23 @@ def load_events(start: str = "2019-01-01", end: str = "2026-10-15") -> pd.DataFr
     return df
 
 
+# TOB・上場廃止系は、成立して上場廃止になった銘柄が株価データから消える（生存バイアス）ため
+# 集計値が実態より小さく出る。内容の重大さから常に最上位にする
+ALWAYS_TOP = {"tob", "risk"}
+
+
 def derive_importance(s: pd.DataFrame) -> int:
     """集計1行から重要度を決める。
-    3: 初期反応の中央値が±3%以上、または20日ドリフトが統計的に有意（|t|≥2）かつ平均±1.5%以上
-    2: 初期反応の中央値が±1%以上、または5日ドリフトが有意
+    3: 初期反応の中央値が±2.5%以上、または20日ドリフトが強く有意（|t|≥3）かつ平均±1.0%以上
+    2: 初期反応の中央値が±1%以上、または5日ドリフトが有意（|t|≥2）
     1: それ以外
     """
+    if s.get("type") in ALWAYS_TOP and s.get("direction") in ("up", "down", "?"):
+        return 3
     car = abs(s.get("car0_med", 0) or 0)
     d20, t20 = abs(s.get("drift20_mean", 0) or 0), abs(s.get("drift20_t", 0) or 0)
     t5 = abs(s.get("drift5_t", 0) or 0)
-    if car >= 3 or (t20 >= 2 and d20 >= 1.5):
+    if car >= 2.5 or (t20 >= 3 and d20 >= 1.0):
         return 3
     if car >= 1 or t5 >= 2:
         return 2
@@ -84,8 +91,14 @@ def build() -> None:
     prices = load_cache()
     res = event_returns(events, prices)
     res = res[res["size"].isin(SIZE_ORDER)]
-    tradable = res[res["turnover"] >= MIN_TURNOVER]
-    log.info("イベント %d件 → 株価あり %d件 → 売買可能 %d件", len(events), len(res), len(tradable))
+    master = load_master()
+    sizes = {c: s.size for c, s in master.items() if s.size in SIZE_ORDER}
+    base = baseline(prices, sizes, "2019-01-01", "2026-10-15")
+    base = base[base["turnover"] >= MIN_TURNOVER]
+    base_summary = summarize(base, ["size"], min_n=30)
+    tradable = adjust_by_baseline(res[res["turnover"] >= MIN_TURNOVER], base)
+    log.info("イベント %d件 → 株価あり %d件 → 売買可能 %d件（対照群 %d件）",
+             len(events), len(res), len(tradable), len(base))
 
     by_type = summarize(tradable, ["type", "direction"])
     by_size = summarize(tradable, ["type", "direction", "size"])
@@ -104,7 +117,9 @@ def build() -> None:
         "# イベントスタディ結果",
         f"- 期間: 2019-01〜2026-10（開示 {len(events):,}件、株価が取れたもの {len(res):,}件、"
         f"売買代金1,000万円/日以上 {len(tradable):,}件）",
-        "- 超過リターン = 銘柄 − TOPIX連動ETF(1306)。外れ値は上下1%で丸め",
+        "- 超過リターン = 銘柄 − TOPIX連動ETF(1306) − 同じ規模の対照群（無作為な銘柄・日）の平均。外れ値は上下1%で丸め",
+        "- 対照群（補正前、規模別。イベントと無関係な偏りの大きさ）",
+        fmt_table(base_summary.assign(imp=""), ["size"]),
         "- 初期反応 = 反応日前日終値→反応日終値。5日/20日 = 通知後に買える最初の始値→5/20営業日目終値",
         "- 注意: 上場廃止銘柄は株価が取れず除外（生存バイアス）。過去分の業績修正はタイトルでしか方向を判定できない",
         "## 種別 × 方向", fmt_table(by_type, ["type", "direction"]),

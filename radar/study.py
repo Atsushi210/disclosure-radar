@@ -79,9 +79,47 @@ def event_returns(events: pd.DataFrame, prices: dict[str, pd.DataFrame], bench_c
                 end = e + k
                 r[name] = (_ret(o[e], c[end]) - _ret(b_open[e], b_close[end])) if end < len(cal) else np.nan
             lo = max(0, prev - 19)
-            r["turnover"] = float(np.nanmedian(c[lo:prev + 1] * v[lo:prev + 1])) if prev >= 0 else np.nan
+            window = c[lo:prev + 1] * v[lo:prev + 1]
+            r["turnover"] = float(np.nanmedian(window)) if np.isfinite(window).any() else np.nan
             rows.append(r)
     return events.merge(pd.DataFrame(rows), on=["doc_id", "type"], how="inner") if rows else events.iloc[0:0]
+
+
+def baseline(prices: dict[str, pd.DataFrame], sizes: dict[str, str], start: str, end: str,
+             n: int = 30000, seed: int = 0) -> pd.DataFrame:
+    """比較用の対照群: 無作為な銘柄・無作為な日の引け後に「開示があった」とみなした場合のリターン。
+
+    小型株のTOPIX劣後や寄り付き→引けの値動きの癖など、イベントと無関係な偏りを測るために使う。
+    規模ごとの平均を各イベントの値から差し引く。
+    """
+    rng = np.random.default_rng(seed)
+    cal = prices["1306"].index
+    days = cal[(cal >= start) & (cal < end)]
+    codes = [c for c in sizes if c in prices and not prices[c].empty]
+    picks = pd.DataFrame({
+        "doc_id": [f"base{i}" for i in range(n)],
+        "code": rng.choice(codes, n),
+        "published_at": [f"{pd.Timestamp(d).date()} 16:00" for d in rng.choice(days, n)],
+        "type": "baseline",
+        "direction": "?",
+    })
+    res = event_returns(picks, prices)
+    res["size"] = res["code"].map(sizes)
+    return res
+
+
+def adjust_by_baseline(events: pd.DataFrame, base: pd.DataFrame) -> pd.DataFrame:
+    """イベントの各指標から、同じ規模の対照群の平均（上下1%で丸め）を差し引く。"""
+    out = events.copy()
+    for size, g in base.groupby("size"):
+        mask = out["size"] == size
+        for m in METRICS:
+            x = g[m].dropna()
+            if len(x) < 30:
+                continue
+            lo, hi = x.quantile([0.01, 0.99])
+            out.loc[mask, m] = out.loc[mask, m] - x.clip(lo, hi).mean()
+    return out
 
 
 def _ret(a: float, b: float) -> float:

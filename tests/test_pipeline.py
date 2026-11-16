@@ -21,6 +21,7 @@ def test_collect_saves_once_and_enriches(temp_db, monkeypatch):
     monkeypatch.setattr(pipeline, "fetch_pdf_text", lambda url: "")
     monkeypatch.setattr(pipeline, "judge_revision", lambda text: Revision("up", 5.0, 45.0))
     monkeypatch.setattr(pipeline, "PDF_SLEEP_SEC", 0)
+    monkeypatch.setattr(pipeline, "load_importance", lambda: {})  # 実データの重要度表に依存させない
 
     first = pipeline.collect(date(2026, 11, 13))
     assert {(e.event.type, e.event.direction, e.event.importance) for e in first} == {
