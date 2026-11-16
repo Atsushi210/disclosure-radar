@@ -1,0 +1,38 @@
+name: live
+
+# 平日 JST 7:00〜23:45 に15分ごと（GitHub の cron は UTC。混雑時は数分〜十数分遅れることがある）
+on:
+  schedule:
+    - cron: "*/15 22-23 * * 0-4"   # JST 月〜金 7:00〜8:45
+    - cron: "*/15 0-14 * * 1-5"    # JST 月〜金 9:00〜23:45
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "run / test-push"
+        default: run
+
+concurrency:
+  group: live
+  cancel-in-progress: false
+
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: run
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          RADAR_APP_URL: ${{ vars.RADAR_APP_URL }}
+        run: |
+          if [ "${{ github.event.inputs.mode }}" = "test-push" ]; then
+            python -m radar.live --test-push
+          else
+            python -m radar.live
+          fi

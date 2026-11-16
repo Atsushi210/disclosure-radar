@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 公開リポジトリのため、メールアドレス等の個人情報はここに書かない。
+    // members/{uid} は管理者が手で作る。存在するユーザーだけが読み書きできる。
+    function isMember() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/members/$(request.auth.uid));
+    }
+
+    match /events/{id} {
+      allow read: if isMember();
+      allow write: if false;  // 書き込みは定期実行（管理者権限）のみ
+    }
+
+    match /devices/{token} {
+      allow read, delete: if isMember() && resource.data.uid == request.auth.uid;
+      allow create, update: if isMember() && request.resource.data.uid == request.auth.uid;
+    }
+
+    // 通知条件・ウォッチ銘柄（ユーザー単位。全端末で共有）
+    match /settings/{uid} {
+      allow read, write: if isMember() && request.auth.uid == uid;
+    }
+
+    match /members/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    match /state/{day} {
+      allow read, write: if false;
+    }
+  }
+}

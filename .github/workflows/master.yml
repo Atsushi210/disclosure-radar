@@ -1,0 +1,29 @@
+name: master
+
+# 銘柄マスタ（JPX 上場銘柄一覧、毎月更新）を週1回取り込み、変化があればコミットする
+on:
+  schedule:
+    - cron: "0 21 * * 0"   # JST 月曜 6:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  master:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m radar.cli master
+      - name: commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/master.csv
+          git diff --cached --quiet || git commit -m "chore: 銘柄マスタ更新" && git push

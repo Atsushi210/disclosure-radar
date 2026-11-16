@@ -1,0 +1,487 @@
+{
+ "alliance|up|*": {
+  "car0": 0.8,
+  "d20": -1.3,
+  "n": 1249
+ },
+ "alliance|up|large": {
+  "car0": 0.1,
+  "d20": -0.1,
+  "n": 39
+ },
+ "alliance|up|micro": {
+  "car0": 1.5,
+  "d20": -1.5,
+  "n": 823
+ },
+ "alliance|up|mid": {
+  "car0": 0.0,
+  "d20": -0.8,
+  "n": 210
+ },
+ "alliance|up|small": {
+  "car0": 0.5,
+  "d20": -1.1,
+  "n": 177
+ },
+ "buyback|up|*": {
+  "car0": 1.9,
+  "d20": 0.7,
+  "n": 5146
+ },
+ "buyback|up|large": {
+  "car0": 1.1,
+  "d20": -0.4,
+  "n": 402
+ },
+ "buyback|up|micro": {
+  "car0": 2.0,
+  "d20": 1.4,
+  "n": 2532
+ },
+ "buyback|up|mid": {
+  "car0": 1.9,
+  "d20": -0.2,
+  "n": 1094
+ },
+ "buyback|up|small": {
+  "car0": 2.0,
+  "d20": 0.6,
+  "n": 1118
+ },
+ "dilution|down|*": {
+  "car0": -0.5,
+  "d20": -1.1,
+  "n": 4733
+ },
+ "dilution|down|large": {
+  "car0": 0.1,
+  "d20": -0.2,
+  "n": 136
+ },
+ "dilution|down|micro": {
+  "car0": -0.6,
+  "d20": -1.2,
+  "n": 3555
+ },
+ "dilution|down|mid": {
+  "car0": -0.4,
+  "d20": -0.4,
+  "n": 513
+ },
+ "dilution|down|small": {
+  "car0": -0.6,
+  "d20": -1.4,
+  "n": 529
+ },
+ "dividend|?|*": {
+  "car0": 1.3,
+  "d20": 0.8,
+  "n": 5852
+ },
+ "dividend|?|large": {
+  "car0": 1.0,
+  "d20": 1.1,
+  "n": 358
+ },
+ "dividend|?|micro": {
+  "car0": 1.2,
+  "d20": 1.0,
+  "n": 2993
+ },
+ "dividend|?|mid": {
+  "car0": 0.9,
+  "d20": 0.1,
+  "n": 1152
+ },
+ "dividend|?|small": {
+  "car0": 1.7,
+  "d20": 1.0,
+  "n": 1349
+ },
+ "dividend|down|*": {
+  "car0": -1.7,
+  "d20": -0.1,
+  "n": 335
+ },
+ "dividend|down|micro": {
+  "car0": -1.7,
+  "d20": -0.1,
+  "n": 277
+ },
+ "dividend|down|small": {
+  "car0": -0.7,
+  "d20": -2.2,
+  "n": 38
+ },
+ "dividend|up|*": {
+  "car0": 1.8,
+  "d20": 0.6,
+  "n": 4540
+ },
+ "dividend|up|large": {
+  "car0": 1.1,
+  "d20": -1.0,
+  "n": 72
+ },
+ "dividend|up|micro": {
+  "car0": 1.8,
+  "d20": 0.8,
+  "n": 2510
+ },
+ "dividend|up|mid": {
+  "car0": 1.6,
+  "d20": 0.1,
+  "n": 765
+ },
+ "dividend|up|small": {
+  "car0": 2.0,
+  "d20": 0.9,
+  "n": 1193
+ },
+ "earnings|?|*": {
+  "car0": -0.6,
+  "d20": 0.1,
+  "n": 72291
+ },
+ "earnings|?|large": {
+  "car0": -0.1,
+  "d20": -0.2,
+  "n": 3134
+ },
+ "earnings|?|micro": {
+  "car0": -1.0,
+  "d20": 0.4,
+  "n": 41899
+ },
+ "earnings|?|mid": {
+  "car0": -0.2,
+  "d20": -0.2,
+  "n": 12199
+ },
+ "earnings|?|small": {
+  "car0": -0.2,
+  "d20": -0.2,
+  "n": 15059
+ },
+ "forecast_gap|?|*": {
+  "car0": -0.5,
+  "d20": -0.1,
+  "n": 4145
+ },
+ "forecast_gap|?|large": {
+  "car0": -0.1,
+  "d20": -0.2,
+  "n": 103
+ },
+ "forecast_gap|?|micro": {
+  "car0": -0.9,
+  "d20": -0.0,
+  "n": 2922
+ },
+ "forecast_gap|?|mid": {
+  "car0": 0.1,
+  "d20": 0.3,
+  "n": 491
+ },
+ "forecast_gap|?|small": {
+  "car0": 0.6,
+  "d20": -0.2,
+  "n": 629
+ },
+ "forecast_revision|?|*": {
+  "car0": 0.3,
+  "d20": -0.1,
+  "n": 15146
+ },
+ "forecast_revision|?|large": {
+  "car0": 0.5,
+  "d20": 0.0,
+  "n": 483
+ },
+ "forecast_revision|?|micro": {
+  "car0": 0.1,
+  "d20": -0.0,
+  "n": 8783
+ },
+ "forecast_revision|?|mid": {
+  "car0": 0.3,
+  "d20": -0.4,
+  "n": 2627
+ },
+ "forecast_revision|?|small": {
+  "car0": 0.7,
+  "d20": 0.1,
+  "n": 3253
+ },
+ "forecast_revision|up|*": {
+  "car0": 2.9,
+  "d20": -0.1,
+  "n": 568
+ },
+ "forecast_revision|up|micro": {
+  "car0": 2.7,
+  "d20": 0.2,
+  "n": 452
+ },
+ "forecast_revision|up|mid": {
+  "car0": 4.2,
+  "d20": 1.3,
+  "n": 35
+ },
+ "forecast_revision|up|small": {
+  "car0": 3.3,
+  "d20": -1.3,
+  "n": 78
+ },
+ "midterm_plan|?|*": {
+  "car0": -0.0,
+  "d20": -0.4,
+  "n": 3942
+ },
+ "midterm_plan|?|large": {
+  "car0": 0.1,
+  "d20": -0.8,
+  "n": 112
+ },
+ "midterm_plan|?|micro": {
+  "car0": -0.2,
+  "d20": 0.1,
+  "n": 2265
+ },
+ "midterm_plan|?|mid": {
+  "car0": 0.3,
+  "d20": -1.2,
+  "n": 660
+ },
+ "midterm_plan|?|small": {
+  "car0": 0.2,
+  "d20": -0.8,
+  "n": 905
+ },
+ "order|up|*": {
+  "car0": 1.5,
+  "d20": 0.0,
+  "n": 410
+ },
+ "order|up|micro": {
+  "car0": 2.0,
+  "d20": -0.2,
+  "n": 343
+ },
+ "order|up|mid": {
+  "car0": -0.3,
+  "d20": -1.3,
+  "n": 42
+ },
+ "partner|up|*": {
+  "car0": 0.7,
+  "d20": -2.7,
+  "n": 1113
+ },
+ "partner|up|large": {
+  "car0": 0.2,
+  "d20": -2.8,
+  "n": 30
+ },
+ "partner|up|micro": {
+  "car0": 0.8,
+  "d20": -3.0,
+  "n": 887
+ },
+ "partner|up|mid": {
+  "car0": 0.3,
+  "d20": -0.6,
+  "n": 80
+ },
+ "partner|up|small": {
+  "car0": 0.2,
+  "d20": -1.4,
+  "n": 116
+ },
+ "risk|down|*": {
+  "car0": -0.8,
+  "d20": -1.0,
+  "n": 805
+ },
+ "risk|down|large": {
+  "car0": -0.2,
+  "d20": -0.6,
+  "n": 44
+ },
+ "risk|down|micro": {
+  "car0": -1.0,
+  "d20": -2.4,
+  "n": 538
+ },
+ "risk|down|mid": {
+  "car0": -0.5,
+  "d20": 2.0,
+  "n": 118
+ },
+ "risk|down|small": {
+  "car0": -0.3,
+  "d20": 2.2,
+  "n": 105
+ },
+ "special_gain|up|*": {
+  "car0": 0.2,
+  "d20": 0.7,
+  "n": 3000
+ },
+ "special_gain|up|large": {
+  "car0": 0.6,
+  "d20": 3.2,
+  "n": 61
+ },
+ "special_gain|up|micro": {
+  "car0": 0.1,
+  "d20": 0.9,
+  "n": 2043
+ },
+ "special_gain|up|mid": {
+  "car0": 0.1,
+  "d20": -0.4,
+  "n": 396
+ },
+ "special_gain|up|small": {
+  "car0": 0.4,
+  "d20": 0.8,
+  "n": 500
+ },
+ "special_loss|down|*": {
+  "car0": -0.9,
+  "d20": -0.4,
+  "n": 4770
+ },
+ "special_loss|down|large": {
+  "car0": -0.8,
+  "d20": -0.6,
+  "n": 107
+ },
+ "special_loss|down|micro": {
+  "car0": -1.0,
+  "d20": -0.3,
+  "n": 3446
+ },
+ "special_loss|down|mid": {
+  "car0": -0.8,
+  "d20": -1.2,
+  "n": 551
+ },
+ "special_loss|down|small": {
+  "car0": -0.3,
+  "d20": 0.0,
+  "n": 666
+ },
+ "split|up|*": {
+  "car0": 2.4,
+  "d20": 0.6,
+  "n": 137
+ },
+ "split|up|micro": {
+  "car0": 3.7,
+  "d20": 0.7,
+  "n": 85
+ },
+ "tob|?|*": {
+  "car0": 0.1,
+  "d20": -0.9,
+  "n": 1984
+ },
+ "tob|?|large": {
+  "car0": 0.0,
+  "d20": -0.1,
+  "n": 368
+ },
+ "tob|?|micro": {
+  "car0": 0.2,
+  "d20": -1.1,
+  "n": 723
+ },
+ "tob|?|mid": {
+  "car0": -0.1,
+  "d20": -0.9,
+  "n": 537
+ },
+ "tob|?|small": {
+  "car0": 0.3,
+  "d20": -0.8,
+  "n": 356
+ },
+ "tob|up|*": {
+  "car0": 0.5,
+  "d20": -0.4,
+  "n": 376
+ },
+ "tob|up|micro": {
+  "car0": 0.5,
+  "d20": 0.0,
+  "n": 254
+ },
+ "tob|up|mid": {
+  "car0": -0.3,
+  "d20": -0.9,
+  "n": 54
+ },
+ "tob|up|small": {
+  "car0": 1.4,
+  "d20": -1.8,
+  "n": 52
+ },
+ "yutai|?|*": {
+  "car0": 0.3,
+  "d20": -0.2,
+  "n": 1611
+ },
+ "yutai|?|large": {
+  "car0": 0.1,
+  "d20": -2.0,
+  "n": 34
+ },
+ "yutai|?|micro": {
+  "car0": 0.5,
+  "d20": -0.2,
+  "n": 1048
+ },
+ "yutai|?|mid": {
+  "car0": -0.1,
+  "d20": -1.0,
+  "n": 214
+ },
+ "yutai|?|small": {
+  "car0": 0.3,
+  "d20": 0.3,
+  "n": 315
+ },
+ "yutai|down|*": {
+  "car0": -2.2,
+  "d20": -0.8,
+  "n": 208
+ },
+ "yutai|down|micro": {
+  "car0": -3.0,
+  "d20": -1.5,
+  "n": 148
+ },
+ "yutai|up|*": {
+  "car0": 2.1,
+  "d20": 0.7,
+  "n": 892
+ },
+ "yutai|up|micro": {
+  "car0": 2.8,
+  "d20": 0.9,
+  "n": 649
+ },
+ "yutai|up|mid": {
+  "car0": 0.1,
+  "d20": -0.1,
+  "n": 82
+ },
+ "yutai|up|small": {
+  "car0": 1.6,
+  "d20": 0.3,
+  "n": 143
+ }
+}

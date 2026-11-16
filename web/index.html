@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>開示レーダー</title>
+  <meta name="theme-color" content="#fbfbfa">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icons/icon-192.png">
+  <link rel="apple-touch-icon" href="/icons/icon-180.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="開示レーダー">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="bar">
+    <h1><img src="/icons/icon-192.png" alt="" width="22" height="22">開示レーダー</h1>
+    <nav>
+      <button id="tab-feed" class="tab is-on" type="button">フィード</button>
+      <button id="tab-settings" class="tab" type="button">通知設定</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="signin" class="panel" hidden>
+      <p>Googleアカウントでログインしてください。</p>
+      <button id="btn-signin" class="primary" type="button">Googleでログイン</button>
+      <p id="signin-msg" class="muted"></p>
+    </section>
+
+    <section id="feed" hidden>
+      <div class="daynav">
+        <button id="prev" type="button" aria-label="前の日">‹</button>
+        <input id="day" type="date">
+        <button id="next" type="button" aria-label="次の日">›</button>
+      </div>
+      <div class="filters">
+        <label>重要度
+          <select id="f-imp">
+            <option value="3">★★★ のみ</option>
+            <option value="2" selected>★★ 以上</option>
+            <option value="1">すべて</option>
+          </select>
+        </label>
+        <label>規模
+          <select id="f-size">
+            <option value="smallcap" selected>小型・超小型</option>
+            <option value="all">すべて</option>
+            <option value="watch">ウォッチ銘柄のみ</option>
+          </select>
+        </label>
+        <label>種別
+          <select id="f-type"><option value="">すべて</option></select>
+        </label>
+      </div>
+      <p id="feed-meta" class="muted"></p>
+      <ol id="list" class="list"></ol>
+    </section>
+
+    <section id="settings" hidden>
+      <div class="panel">
+        <h2>この端末の通知</h2>
+        <p id="push-status" class="muted"></p>
+        <button id="btn-push" class="primary" type="button">通知を有効にする</button>
+        <p class="note">iPhone は Safari の共有メニューから「ホーム画面に追加」した後、ホーム画面のアイコンから開くと通知を有効にできます。</p>
+      </div>
+
+      <form id="form-settings" class="panel">
+        <h2>通知の条件（全端末共通）</h2>
+        <label class="row"><input type="checkbox" id="s-enabled"> 通知を受け取る</label>
+        <label class="row">通常の銘柄で通知する重要度
+          <select id="s-min">
+            <option value="3">★★★ のみ</option>
+            <option value="2">★★ 以上</option>
+          </select>
+        </label>
+        <fieldset>
+          <legend>通知する規模</legend>
+          <label><input type="checkbox" name="size" value="micro"> 超小型</label>
+          <label><input type="checkbox" name="size" value="small"> 小型</label>
+          <label><input type="checkbox" name="size" value="mid"> 中型</label>
+          <label><input type="checkbox" name="size" value="large"> 大型</label>
+        </fieldset>
+        <fieldset id="s-types">
+          <legend>通知する種別（未選択ならすべて）</legend>
+        </fieldset>
+        <label class="row col">ウォッチ銘柄（保有など。証券コードを空白・改行区切り）
+          <textarea id="s-watch" rows="4" placeholder="例: 7203 6532 130A"></textarea>
+        </label>
+        <label class="row">ウォッチ銘柄で通知する重要度
+          <select id="s-wmin">
+            <option value="1">すべて</option>
+            <option value="2">★★ 以上</option>
+            <option value="3">★★★ のみ</option>
+          </select>
+        </label>
+        <button class="primary" type="submit">保存</button>
+        <span id="save-msg" class="muted"></span>
+      </form>
+
+      <div class="panel">
+        <button id="btn-signout" type="button">ログアウト</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="/app.js"></script>
+</body>
+</html>

@@ -77,6 +77,16 @@ def apply_importance(ne: NewEvent, size: str, table: dict[str, int]) -> NewEvent
     return replace(ne, event=replace(ev, importance=max(base, 3 if big_revision else 1)))
 
 
+def process(x: Disclosure, master: dict, table: dict[str, int], enrich: bool = True) -> list[NewEvent]:
+    """開示1件を分類し、必要ならPDFで方向を補い、重要度表を適用する。"""
+    size = master[x.code].size if x.code in master else ""
+    out = []
+    for ev in classify(x.title):
+        ne = enrich_revision(x, ev) if enrich and ev.direction == "?" else NewEvent(x, ev)
+        out.append(apply_importance(ne, size, table))
+    return out
+
+
 def collect(target: date | None = None, enrich: bool = True) -> list[NewEvent]:
     """指定日の開示を取り込み、新規分のイベントを返す。既存の開示は再処理しない。"""
     d = target or today_jst()
@@ -101,10 +111,7 @@ def collect(target: date | None = None, enrich: bool = True) -> list[NewEvent]:
 
         master, table = load_master(), load_importance()
         for x in fresh:
-            size = master[x.code].size if x.code in master else ""
-            for ev in classify(x.title):
-                ne = enrich_revision(x, ev) if enrich and ev.direction == "?" else NewEvent(x, ev)
-                ne = apply_importance(ne, size, table)
+            for ne in process(x, master, table, enrich):
                 conn.execute(
                     "INSERT OR IGNORE INTO events (doc_id,type,label,direction,importance,sales_rate,profit_rate)"
                     " VALUES (?,?,?,?,?,?,?)",

@@ -19,6 +19,7 @@ from radar.study import adjust_by_baseline, baseline, event_returns, summarize
 ROOT = Path(__file__).resolve().parent.parent
 REPORT = ROOT / "docs" / "event_study.md"
 IMPORTANCE = ROOT / "data" / "importance.json"
+TENDENCY = ROOT / "data" / "tendency.json"
 MIN_TURNOVER = 10_000_000  # 売買代金の中央値1,000万円/日未満は「実際には売買しにくい」として除外
 SIZE_ORDER = ["large", "mid", "small", "micro"]
 SIZE_JA = {"large": "大型", "mid": "中型", "small": "小型", "micro": "超小型"}
@@ -108,6 +109,15 @@ def build() -> None:
     importance = {f"{r.type}|{r.direction}|{r.size}": int(r.imp) for r in by_size.itertuples()}
     importance.update({f"{r.type}|{r.direction}|*": int(r.imp) for r in by_type.itertuples()})
     IMPORTANCE.write_text(json.dumps(importance, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
+
+    # 通知に添える「過去の傾向」（初期反応の中央値と20日ドリフトの平均、%）
+    tendency = {}
+    for s, scope in ((by_type, "*"), (by_size, None)):
+        for r in s.itertuples():
+            key = f"{r.type}|{r.direction}|{scope or r.size}"
+            tendency[key] = {"n": int(r.n), "car0": round(float(r.car0_med), 1),
+                             "d20": round(float(r.drift20_mean), 1)}
+    TENDENCY.write_text(json.dumps(tendency, ensure_ascii=False, indent=1, sort_keys=True), encoding="utf-8")
 
     yearly = tradable.assign(year=tradable["published_at"].str[:4])
     stable = summarize(yearly, ["type", "direction", "year"], min_n=20)

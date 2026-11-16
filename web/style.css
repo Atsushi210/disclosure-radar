@@ -1,0 +1,60 @@
+/* 白地×黒枠×朱のアクセント（昇給録と同じ系統）。ダーク系にはしない */
+:root {
+  --bg: #fbfbfa;
+  --ink: #16202b;
+  --muted: #6b7280;
+  --line: #d9dcd6;
+  --accent: #d6482c;
+  --up: #b4321c;
+  --down: #1f5fa8;
+  --watch: #fff4e5;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  --sans: "Zen Kaku Gothic New", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--sans); }
+button, select, input, textarea { font: inherit; color: inherit; }
+.bar {
+  position: sticky; top: 0; z-index: 2; background: var(--bg);
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  padding: calc(env(safe-area-inset-top) + 10px) 16px 10px; border-bottom: 2px solid var(--ink);
+}
+.bar h1 { margin: 0; font-size: 17px; font-weight: 700; display: flex; gap: 8px; align-items: center; }
+.tab { border: 1px solid var(--ink); background: transparent; padding: 4px 10px; border-radius: 2px; }
+.tab.is-on { background: var(--ink); color: var(--bg); }
+main { max-width: 760px; margin: 0 auto; padding: 12px 16px 48px; }
+.panel { border: 1px solid var(--ink); padding: 14px 16px; margin: 12px 0; background: #fff; }
+.panel h2 { margin: 0 0 8px; font-size: 15px; }
+.muted { color: var(--muted); font-size: 13px; }
+.note { color: var(--muted); font-size: 12px; margin: 8px 0 0; }
+.primary { background: var(--accent); color: #fff; border: 0; padding: 8px 14px; border-radius: 2px; font-weight: 700; }
+button:not(.primary):not(.tab) { border: 1px solid var(--ink); background: #fff; padding: 6px 12px; border-radius: 2px; }
+.daynav { display: flex; gap: 6px; align-items: center; }
+.daynav input { font-family: var(--mono); border: 1px solid var(--ink); padding: 5px 8px; background: #fff; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 10px 0 4px; font-size: 13px; }
+.filters select { border: 1px solid var(--line); background: #fff; padding: 3px 6px; margin-left: 4px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.item { border: 1px solid var(--line); border-left: 4px solid var(--line); background: #fff; padding: 10px 12px; margin: 8px 0; }
+.item.imp3 { border-left-color: var(--accent); }
+.item.imp2 { border-left-color: var(--ink); }
+.item.watch { background: var(--watch); }
+.item.focus { outline: 2px solid var(--accent); }
+.head { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+.time, .code, .rate, .stars { font-family: var(--mono); font-size: 13px; }
+.stars { color: var(--accent); }
+.name { font-weight: 700; }
+.badge { font-size: 11px; border: 1px solid var(--line); padding: 0 5px; border-radius: 2px; color: var(--muted); }
+.label { font-weight: 700; }
+.label.up { color: var(--up); }
+.label.down { color: var(--down); }
+.title { display: block; margin-top: 4px; color: var(--ink); text-decoration: none; font-size: 14px; }
+.title:hover { text-decoration: underline; }
+.hist { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px; }
+fieldset { border: 1px solid var(--line); margin: 10px 0; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 6px 14px; }
+legend { font-size: 13px; color: var(--muted); padding: 0 4px; }
+fieldset label { font-size: 14px; }
+.row { display: flex; gap: 8px; align-items: center; margin: 8px 0; flex-wrap: wrap; }
+.row.col { flex-direction: column; align-items: stretch; }
+textarea { border: 1px solid var(--line); padding: 6px 8px; font-family: var(--mono); background: #fff; }
+.row select { border: 1px solid var(--line); background: #fff; padding: 3px 6px; }
+.empty { padding: 24px 0; text-align: center; color: var(--muted); }
