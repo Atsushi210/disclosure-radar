@@ -7,7 +7,7 @@ import {
 import {
   getFirestore, collection, query, where, getDocs, doc, getDoc, setDoc, deleteDoc, serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-import { getMessaging, getToken, onMessage, isSupported } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-messaging.js";
+import { getMessaging, getToken, isSupported } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-messaging.js";
 import { firebaseConfig, vapidKey } from "./config.js";
 
 const TYPES = [
@@ -233,5 +233,7 @@ async function disablePush() {
   await refreshPushStatus();
 }
 
-// アプリを開いている間に届いた通知はフィードを再読み込みして反映する
-isSupported().then((ok) => { if (ok) onMessage(getMessaging(app), () => loadDay()); });
+// 通知の表示は Service Worker が必ず行う。開いている間に届いたらフィードを再読み込みする
+navigator.serviceWorker?.addEventListener("message", (e) => {
+  if (e.data && e.data.type === "radar-push" && user) loadDay();
+});
