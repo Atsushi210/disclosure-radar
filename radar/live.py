@@ -44,6 +44,8 @@ def to_doc(ne: NewEvent, size: str, tendency: dict | None = None) -> dict:
     hist = t.get(f"{ev.type}|{ev.direction}|{size}") or t.get(f"{ev.type}|{ev.direction}|*")
     if ev.type in ("tob", "risk"):  # 生存バイアスで過去値が当てにならないため添えない
         hist = None
+    if ne.earn is not None:  # 決算の数値判定は過去の株価反応をまだ持たない
+        hist = None
     return {
         "hist": hist,
         "id": f"{x.doc_id}_{ev.type}",
@@ -61,6 +63,7 @@ def to_doc(ne: NewEvent, size: str, tendency: dict | None = None) -> dict:
         "importance": ev.importance,
         "sales_rate": ne.sales_rate,
         "profit_rate": ne.profit_rate,
+        "earn": ne.earn,
     }
 
 

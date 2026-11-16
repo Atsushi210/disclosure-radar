@@ -135,7 +135,8 @@ function card(e, watched, focus) {
     span("badge", SIZE_JA[e.size] ?? "—"),
     span(`label ${e.direction}`, `${ARROW[e.direction] || ""}${e.label}`),
   );
-  if (e.profit_rate != null) head.append(span("rate", `営業益${e.profit_rate > 0 ? "+" : ""}${Math.round(e.profit_rate)}%`));
+  if (e.profit_rate != null && !(e.earn && e.earn.text)) head.append(span("rate", `営業益${e.profit_rate > 0 ? "+" : ""}${Math.round(e.profit_rate)}%`));
+  if (e.earn && e.earn.text) head.append(span(`earn ${e.direction}`, e.earn.text));
   if (watched) head.append(span("badge", "ウォッチ"));
   const a = document.createElement("a");
   a.className = "title"; a.href = e.pdf_url; a.target = "_blank"; a.rel = "noopener"; a.textContent = e.title;

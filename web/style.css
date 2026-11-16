@@ -47,6 +47,9 @@ button:not(.primary):not(.tab) { border: 1px solid var(--ink); background: #fff;
 .label { font-weight: 700; }
 .label.up { color: var(--up); }
 .label.down { color: var(--down); }
+.earn { font-size: 13px; flex-basis: 100%; }
+.earn.up { color: var(--up); }
+.earn.down { color: var(--down); }
 .title { display: block; margin-top: 4px; color: var(--ink); text-decoration: none; font-size: 14px; }
 .title:hover { text-decoration: underline; }
 .hist { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-top: 2px; }

@@ -59,6 +59,61 @@ def cmd_show(a: argparse.Namespace) -> None:
     print(f"--- {shown}件 ({d})")
 
 
+def cmd_earnings_sample(a: argparse.Namespace) -> None:
+    """期間内の決算短信の XBRL を読み、判定結果を CSV に書く（しきい値の調整用）。中断しても再開できる。"""
+    import csv
+    import os
+    import time
+    from dataclasses import asdict
+
+    from radar.earnings import judge
+    from radar.xbrl import fetch_summary_html, parse_summary
+
+    done: set[str] = set()
+    if os.path.exists(a.out):
+        with open(a.out, encoding="utf-8") as f:
+            done = {r["doc_id"] for r in csv.DictReader(f)}
+    with db.get_conn() as conn:
+        rows = conn.execute(
+            """SELECT doc_id, published_at, code, title, xbrl_url FROM disclosures
+               WHERE title LIKE '%決算短信%' AND title NOT LIKE '%訂正%' AND xbrl_url <> ''
+                 AND published_at >= ? AND published_at < ? ORDER BY published_at""",
+            (a.start.isoformat(), (a.end.isoformat() + "~")),
+        ).fetchall()
+    todo = [r for r in rows if r["doc_id"] not in done]
+    print(f"対象 {len(rows)}件、未処理 {len(todo)}件")
+    fields = ["doc_id", "published_at", "code", "title", "direction", "importance", "goods", "bads",
+              "quarter", "consolidated", "sales", "sales_prior", "op", "op_prior", "net", "net_prior",
+              "fy_sales", "fy_op", "fy_net", "div", "div_prior", "div_next", "forecast_corrected",
+              "progress", "next_yoy", "op_yoy", "sales_yoy", "error"]
+    new_file = not os.path.exists(a.out)
+    with open(a.out, "a", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+        if new_file:
+            w.writeheader()
+        for i, r in enumerate(todo, 1):
+            row = {k: r[k] for k in ("doc_id", "published_at", "code", "title")}
+            try:
+                html = fetch_summary_html(r["xbrl_url"])
+                s = parse_summary(html) if html else None
+                if s is None:
+                    row["error"] = "サマリーなし"
+                else:
+                    e = judge(s)
+                    row |= {k: v for k, v in asdict(s).items() if k != "extra"}
+                    row |= {"direction": e.direction, "importance": e.importance, "goods": "|".join(e.goods),
+                            "bads": "|".join(e.bads), "progress": e.metrics.get("progress"),
+                            "next_yoy": e.metrics.get("next_yoy"), "op_yoy": e.metrics.get("op_yoy"),
+                            "sales_yoy": e.metrics.get("sales_yoy")}
+            except Exception as exc:  # noqa: BLE001
+                row["error"] = str(exc)[:80]
+            w.writerow(row)
+            if i % 100 == 0:
+                f.flush()
+                print(f"{i}/{len(todo)}")
+            time.sleep(a.sleep)
+
+
 def main(argv: list[str] | None = None) -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
     logging.getLogger("pypdf").setLevel(logging.ERROR)  # PDFのフォント警告は判定に影響しないため抑制
@@ -83,6 +138,13 @@ def main(argv: list[str] | None = None) -> None:
     s.add_argument("--size")
     s.add_argument("--type")
     s.set_defaults(func=cmd_show)
+
+    e = sub.add_parser("earnings-sample")
+    e.add_argument("--start", type=date.fromisoformat, required=True)
+    e.add_argument("--end", type=date.fromisoformat, required=True)
+    e.add_argument("--out", default="data/earnings_sample.csv")
+    e.add_argument("--sleep", type=float, default=0.2)
+    e.set_defaults(func=cmd_earnings_sample)
 
     a = p.parse_args(argv)
     a.func(a)

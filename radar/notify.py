@@ -46,6 +46,10 @@ def single_message(ev: dict[str, Any], app_url: str, watched: bool) -> Message:
     mark = "【保有】" if watched else ""
     h = ev.get("hist")
     hist = f"\n過去{h['n']}件: 初動{h['car0']:+.1f}% → 20日{h['d20']:+.1f}%" if h else ""
+    earn = ev.get("earn") or {}
+    if earn.get("text"):  # 決算短信は数値の要約を添え、率は要約に含むので見出しには付けない
+        hist = f"\n{earn['text']}" + hist
+        rate = ""
     return {
         "title": f"{mark}{ev['code']} {ev['company_name']} {ARROW.get(ev['direction'], '')}{ev['label']}{rate}",
         "body": f"{ev['published_at'][11:]} {SIZE_JA.get(ev.get('size', ''), '')} {ev['title'][:70]}{hist}",

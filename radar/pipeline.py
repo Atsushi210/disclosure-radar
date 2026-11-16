@@ -25,6 +25,7 @@ class NewEvent:
     event: Event
     sales_rate: float | None = None
     profit_rate: float | None = None
+    earn: dict | None = None  # 決算短信の読み取り結果（text, goods, bads, metrics）
 
 
 def fetch(target: date) -> list[Disclosure]:
@@ -57,6 +58,29 @@ def enrich_revision(d: Disclosure, ev: Event) -> NewEvent:
     return NewEvent(d, replace(ev, direction=direction, importance=importance), rev.sales_rate, rev.profit_rate)
 
 
+def enrich_earnings(d: Disclosure, ev: Event) -> NewEvent:
+    """決算短信は XBRL サマリーの数値から方向・重要度・要約を決める。読めなければタイトル分類のまま。"""
+    from radar.earnings import judge
+    from radar.xbrl import fetch_summary_html, parse_summary
+
+    if not d.xbrl_url:
+        return NewEvent(d, ev)
+    try:
+        html = fetch_summary_html(d.xbrl_url)
+        s = parse_summary(html) if html else None
+    except Exception as exc:  # noqa: BLE001
+        log.warning("XBRL読取失敗 %s %s: %s", d.code, d.doc_id, exc)
+        return NewEvent(d, ev)
+    finally:
+        time.sleep(PDF_SLEEP_SEC)
+    if s is None:
+        return NewEvent(d, ev)
+    r = judge(s)
+    earn = {"text": r.text, "goods": r.goods, "bads": r.bads, "metrics": r.metrics}
+    return NewEvent(d, replace(ev, direction=r.direction, importance=r.importance),
+                    r.sales_yoy, r.op_yoy, earn)
+
+
 IMPORTANCE_PATH = db.DB_PATH.parent / "importance.json"
 
 
@@ -70,6 +94,8 @@ def load_importance() -> dict[str, int]:
 def apply_importance(ne: NewEvent, size: str, table: dict[str, int]) -> NewEvent:
     """過去の株価反応に基づく重要度で置き換える。業績修正の大幅修正（±30%）による昇格は残す。"""
     ev = ne.event
+    if ne.earn is not None:  # 決算短信は数値で判定済み（過去の株価反応の表はタイトル分類のもの）
+        return ne
     base = table.get(f"{ev.type}|{ev.direction}|{size}", table.get(f"{ev.type}|{ev.direction}|*"))
     if base is None:
         return ne
@@ -82,7 +108,12 @@ def process(x: Disclosure, master: dict, table: dict[str, int], enrich: bool = T
     size = master[x.code].size if x.code in master else ""
     out = []
     for ev in classify(x.title):
-        ne = enrich_revision(x, ev) if enrich and ev.direction == "?" else NewEvent(x, ev)
+        if enrich and ev.type == "earnings" and "訂正" not in x.title:
+            ne = enrich_earnings(x, ev)
+        elif enrich and ev.direction == "?":
+            ne = enrich_revision(x, ev)
+        else:
+            ne = NewEvent(x, ev)
         out.append(apply_importance(ne, size, table))
     return out
 
