@@ -22,7 +22,7 @@ from radar.pipeline import NewEvent, fetch, load_importance, process
 
 log = logging.getLogger(__name__)
 FRESH_MINUTES = 90
-APP_URL = os.environ.get("RADAR_APP_URL", "https://disclosure-radar.web.app/")
+APP_URL = os.environ.get("RADAR_APP_URL") or "https://disclosure-radar-2026.web.app/"
 
 
 TENDENCY_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "tendency.json")
