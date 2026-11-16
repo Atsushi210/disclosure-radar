@@ -25,8 +25,15 @@ class Store(Protocol):
     def remove_device(self, token: str) -> None: ...
 
 
+PROJECT_ID = os.environ.get("FIREBASE_PROJECT_ID", "disclosure-radar-2026")
+
+
 def init_app():
-    """環境変数 FIREBASE_SERVICE_ACCOUNT（JSON文字列）またはファイルパスで初期化する。"""
+    """認証情報で Firebase Admin を初期化する。
+
+    GitHub Actions では Workload Identity 連携（鍵なし）で得た既定の認証情報（ADC）を使う。
+    手元で鍵ファイルを使う場合だけ FIREBASE_SERVICE_ACCOUNT（JSON文字列またはパス）を指定する。
+    """
     import firebase_admin
     from firebase_admin import credentials
 
@@ -38,8 +45,8 @@ def init_app():
     elif raw:
         cred = credentials.Certificate(raw)
     else:
-        raise RuntimeError("FIREBASE_SERVICE_ACCOUNT が未設定")
-    return firebase_admin.initialize_app(cred)
+        cred = credentials.ApplicationDefault()
+    return firebase_admin.initialize_app(cred, {"projectId": PROJECT_ID})
 
 
 class FirestoreStore:
